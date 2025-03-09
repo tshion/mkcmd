@@ -33,7 +33,7 @@ jobs:
           echo "version=$date" >> "$GITHUB_OUTPUT"
 
       # https://github.com/tshion/can-create-release
-      - uses: tshion/can-create-release@0.1.0
+      - uses: tshion/can-create-release@0.1.1
         with:
           tag: ${{ steps.meta.outputs.version }}
 
