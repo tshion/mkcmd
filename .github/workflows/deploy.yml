@@ -62,8 +62,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.meta.outputs.version }}
-          ZIP_NAME: ${{ steps.zip.outputs.name }}
+          ZIP_PATH: "build/${{ steps.zip.outputs.name }}"
         run: |
           git tag "$VERSION"
           git push origin "$VERSION"
-          gh release create "$VERSION" "$ZIP_NAME" --generate-notes --title "$VERSION"
+          gh release create "$VERSION" "$ZIP_PATH" --generate-notes --title "$VERSION"
