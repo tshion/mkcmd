@@ -1,0 +1,67 @@
+name: Deploy
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - released
+    paths:
+      - package.json
+
+  workflow_dispatch:
+    inputs:
+      osRunner:
+        default: ubuntu-24.04
+        description: https://github.com/actions/runner-images
+        required: true
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  preparation:
+    if: ${{ github.ref_type == 'branch' }}
+    runs-on: ${{ inputs.osRunner || 'ubuntu-24.04' }}
+    timeout-minutes: 5
+    steps:
+      # https://github.com/actions/checkout
+      - uses: actions/checkout@v4
+
+      # https://github.com/actions/setup-node
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+          cache-dependency-path: ./package-lock.json
+
+      - run: npm ci
+
+      - name: Get version name
+        id: meta
+        run: |
+          version=$(bash .github/scripts/get-version.bash)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - run: npm run deploy
+
+      - name: Zip files
+        id: zip
+        working-directory: build
+        env:
+          ZIP_NAME: "mkcmd_${{ steps.meta.outputs.version }}.zip"
+        run: |
+          zip -X -r "$ZIP_NAME" .
+          echo "name=$ZIP_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Create release notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.meta.outputs.version }}
+          ZIP_NAME: ${{ steps.zip.outputs.name }}
+        run: |
+          git tag "$VERSION"
+          git push origin "$VERSION"
+          gh release create "$VERSION" "$ZIP_NAME" --generate-notes --title "$VERSION"

@@ -1,17 +1,20 @@
 {
   "name": "mkcmd",
-  "version": "0.0.0",
+  "version": "2025.3.9",
   "private": true,
   "scripts": {
+    "clean": "gts clean",
     "fix": "gts fix",
     "prebuild": "node build.pre.js",
     "build": "node build.js",
-    "build:show-arguments": "npm run build show-arguments"
+    "build:show-arguments": "npm run build show-arguments",
+    "deploy": "npm-run-all build:*"
   },
   "devDependencies": {
     "@types/node": "^20.17.19",
     "@vercel/ncc": "^0.38.3",
     "gts": "^6.0.2",
+    "npm-run-all2": "^7.0.2",
     "typescript": "5.7.3"
   }
 }
