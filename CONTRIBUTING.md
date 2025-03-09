@@ -16,6 +16,7 @@
 
 ## リリース方法
 1. GitHub Actions の `Create a release pull request` を実行する
+  * コードが未整形の場合、失敗するので注意
 1. 前項で作成されたPull Request を確認し、問題が無ければマージする
 1. GitHub Actions の `Deploy` が自動実行されるので、しばらく待つ
 1. GitHub Release が作成されていることを確認する

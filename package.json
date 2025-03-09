@@ -5,6 +5,7 @@
   "scripts": {
     "clean": "gts clean",
     "fix": "gts fix",
+    "lint": "gts lint",
     "prebuild": "node build.pre.js",
     "build": "node build.js",
     "build:show-arguments": "npm run build show-arguments",

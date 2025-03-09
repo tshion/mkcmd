@@ -14,14 +14,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check:
+  create-pr:
     if: ${{ github.ref_type == 'branch' && github.ref_name == 'develop' }}
     runs-on: ${{ inputs.osRunner }}
-    outputs:
-      version: ${{ steps.meta.outputs.version }}
     permissions:
       contents: write
-    timeout-minutes: 3
+      pull-requests: write
+    timeout-minutes: 5
     steps:
       # https://github.com/actions/checkout
       - uses: actions/checkout@v4
@@ -37,18 +36,6 @@ jobs:
         with:
           tag: ${{ steps.meta.outputs.version }}
 
-  create-pr:
-    needs:
-      - check
-    runs-on: ${{ inputs.osRunner }}
-    permissions:
-      contents: write
-      pull-requests: write
-    timeout-minutes: 3
-    steps:
-      # https://github.com/actions/checkout
-      - uses: actions/checkout@v4
-
       # https://github.com/actions/setup-node
       - uses: actions/setup-node@v4
         with:
@@ -56,9 +43,14 @@ jobs:
           cache: npm
           cache-dependency-path: ./package-lock.json
 
+      - run: npm ci
+
+      - name: Check code style
+        run: npm run lint
+
       - name: Set version
         env:
-          VERSION: ${{ needs.check.outputs.version }}
+          VERSION: ${{ steps.meta.outputs.version }}
         run: bash .github/scripts/set-version.bash "$VERSION"
 
       - name: Generate diff notes
@@ -90,7 +82,7 @@ jobs:
 
       - name: git add & push
         env:
-          VERSION: ${{ needs.check.outputs.version }}
+          VERSION: ${{ steps.meta.outputs.version }}
         run: |
           branch="feature/$VERSION"
 
@@ -102,8 +94,8 @@ jobs:
 
       - name: Create pull request
         env:
-          ASSIGNEE: tshion
           BASE: released
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ needs.check.outputs.version }}
-        run: gh pr create --assignee "$ASSIGNEE" --base "$BASE" --title "Update $VERSION" --body-file PR_BODY
+          REVIEWER: tshion
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: gh pr create --assignee "@me" --base "$BASE" --reviewer "$REVIEWER" --title "Update $VERSION" --body-file PR_BODY

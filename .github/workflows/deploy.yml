@@ -25,7 +25,9 @@ jobs:
   preparation:
     if: ${{ github.ref_type == 'branch' }}
     runs-on: ${{ inputs.osRunner || 'ubuntu-24.04' }}
-    timeout-minutes: 5
+    permissions:
+      contents: write
+    timeout-minutes: 15
     steps:
       # https://github.com/actions/checkout
       - uses: actions/checkout@v4
