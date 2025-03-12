@@ -13,6 +13,17 @@
       "dependsOn": [
         "npm: build:show-arguments",
       ]
+    },
+    {
+      "label": "Run: update",
+      "type": "process",
+      "command": "node",
+      "args": [
+        "build/update.js",
+      ],
+      "dependsOn": [
+        "npm: build:update",
+      ]
     }
   ]
 }
