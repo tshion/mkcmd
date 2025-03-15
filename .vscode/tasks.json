@@ -21,6 +21,11 @@
       "args": [
         "build/update.js",
       ],
+      "options": {
+        "env": {
+          "TEST_MODE": "true",
+        }
+      },
       "dependsOn": [
         "npm: build:update",
       ]

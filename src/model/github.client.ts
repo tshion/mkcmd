@@ -2,6 +2,7 @@
 import {existsSync} from 'node:fs';
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
+import {env} from 'node:process';
 import {cacheDirPath, userAgent} from './meta.const';
 
 const {Octokit} = require('@octokit/core');
@@ -10,7 +11,8 @@ const {Octokit} = require('@octokit/core');
  * GitHub とのAPI クライアント
  */
 export class GitHubClient {
-  public static async new(useLocalCache = false, auth?: any) {
+  public static async new(auth?: any) {
+    const useLocalCache = env.TEST_MODE?.toLowerCase() === 'true';
     if (useLocalCache && !existsSync(cacheDirPath)) {
       await mkdir(cacheDirPath, {recursive: true});
     }
@@ -31,7 +33,9 @@ export class GitHubClient {
     if (this.useLocalCache && existsSync(cacheFilePath)) {
       const text = await readFile(cacheFilePath, {encoding: 'utf-8'});
       try {
-        return JSON.parse(text);
+        const obj = JSON.parse(text);
+        console.log('Use response cache');
+        return obj;
       } catch {
         /* empty */
       }
