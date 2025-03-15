@@ -5,7 +5,12 @@ import {resolve} from 'node:path';
 import {pipeline} from 'node:stream/promises';
 import {Open} from 'unzipper';
 import {GitHubClient} from './model/github.client';
-import {commandDirPath, userAgent} from './model/meta.const';
+import {
+  commandDirPath,
+  parseVersionCode,
+  readVersionText,
+  userAgent,
+} from './model/meta.const';
 
 const fetch = require('node-fetch');
 
@@ -18,19 +23,28 @@ const fetch = require('node-fetch');
  * ```
  */
 async function main() {
-  // 最新のリリースを取得し、対象のリリースアセットの情報を抜き出す
+  // 最新のGitHub Release を取得し、バージョンチェックを行う
+  const localVersionText = await readVersionText();
+  const localVersion = localVersionText
+    ? parseVersionCode(localVersionText)
+    : 0;
+
   const githubClient = await GitHubClient.new();
   const latestReleaseResponse = await githubClient.getLatestRelease(
     'tshion',
     'mkcmd',
   );
+  const remoteVersionText = latestReleaseResponse.data.tag_name;
+  if (parseVersionCode(remoteVersionText) <= localVersion) {
+    console.log('既に最新です');
+    return;
+  }
 
+  // コマンドをダウンロードする
   const assets = Object.values<any>(latestReleaseResponse.data.assets);
   const target = assets.find(item => {
     return /^mkcmd_[0-9]{4}\.[0-9]{2}\.[0-9]{2}\.zip$/.test(item.name);
   });
-
-  // リリースアセットをダウンロードする
   const assetResponse = await fetch(target.url, {
     headers: {
       Accept: 'application/octet-stream',
@@ -40,7 +54,6 @@ async function main() {
   if (!assetResponse.ok) {
     throw new Error(assetResponse.statusText);
   }
-
   const zipPath = resolve(target.name);
   await pipeline(assetResponse.body, createWriteStream(zipPath));
 
@@ -50,7 +63,7 @@ async function main() {
   await directory.extract({path: commandDirPath});
   await rm(zipPath);
 
-  console.log(`Updated: ${target.name}`);
+  console.log(`Updated: ${localVersionText} -> ${remoteVersionText}`);
 }
 
 +(async function () {

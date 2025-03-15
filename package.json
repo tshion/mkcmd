@@ -10,7 +10,8 @@
     "build": "node build.js",
     "build:show-arguments": "npm run build show-arguments",
     "build:update": "npm run build update",
-    "deploy": "npm-run-all build:*"
+    "deploy": "npm-run-all build:*",
+    "test": "node --import tsx test/**/*.test.ts"
   },
   "devDependencies": {
     "@octokit/core": "^6.1.4",
@@ -20,6 +21,7 @@
     "gts": "^6.0.2",
     "node-fetch": "^2.7.0",
     "npm-run-all2": "^7.0.2",
+    "tsx": "^4.19.3",
     "typescript": "5.7.3",
     "unzipper": "^0.12.3"
   }
