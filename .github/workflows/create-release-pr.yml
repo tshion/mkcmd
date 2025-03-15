@@ -48,6 +48,9 @@ jobs:
       - name: Check code style
         run: npm run lint
 
+      - name: Run test
+        run: npm run test
+
       - name: Set version
         env:
           VERSION: ${{ steps.meta.outputs.version }}
