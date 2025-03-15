@@ -1,7 +1,16 @@
-const {Octokit} = require('@octokit/core');
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {createWriteStream} from 'node:fs';
+import {rm} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {pipeline} from 'node:stream/promises';
+import {Open} from 'unzipper';
+import {GitHubClient} from './model/github.client';
+import {commandDirPath, userAgent} from './model/meta.const';
+
+const fetch = require('node-fetch');
 
 /**
- * ツール自身のアップデート
+ * 最新のコマンドに更新する
  *
  * @example
  * ``` shell
@@ -9,24 +18,39 @@ const {Octokit} = require('@octokit/core');
  * ```
  */
 async function main() {
-  const octokit = new Octokit({});
-
   // 最新のリリースを取得し、対象のリリースアセットの情報を抜き出す
-  const response = await octokit.request('GET /repos/{owner}/{repo}/releases', {
-    owner: 'tshion',
-    repo: 'mkcmd',
-    headers: {
-      'X-GitHub-Api-Version': '2022-11-28',
-    },
-  });
+  const githubClient = await GitHubClient.new();
+  const latestReleaseResponse = await githubClient.getLatestRelease(
+    'tshion',
+    'mkcmd',
+  );
 
-  const latestRelease = response.data[0];
-  const assets: any[] = Object.values(latestRelease.assets);
-  assets.forEach(item => {
-    console.log(`${item.name} : ${item.id}`);
+  const assets = Object.values<any>(latestReleaseResponse.data.assets);
+  const target = assets.find(item => {
+    return /^mkcmd_[0-9]{4}\.[0-9]{2}\.[0-9]{2}\.zip$/.test(item.name);
   });
 
   // リリースアセットをダウンロードする
+  const assetResponse = await fetch(target.url, {
+    headers: {
+      Accept: 'application/octet-stream',
+      'User-Agent': userAgent,
+    },
+  });
+  if (!assetResponse.ok) {
+    throw new Error(assetResponse.statusText);
+  }
+
+  const zipPath = resolve(target.name);
+  await pipeline(assetResponse.body, createWriteStream(zipPath));
+
+  // コマンドを配置する
+  const directory = await Open.file(zipPath);
+  await rm(commandDirPath, {force: true, recursive: true});
+  await directory.extract({path: commandDirPath});
+  await rm(zipPath);
+
+  console.log(`Updated: ${target.name}`);
 }
 
 +(async function () {
