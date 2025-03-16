@@ -36,10 +36,9 @@ jobs:
         env:
           BRANCH: ${{ steps.meta.outputs.branch }}
         run: |
-          git fetch origin released
-          git checkout released
           git switch --create "$BRANCH"
-          git merge develop
+          git fetch origin released
+          git merge origin/released
 
       # https://github.com/tshion/can-create-release
       # - uses: tshion/can-create-release@0.1.1
