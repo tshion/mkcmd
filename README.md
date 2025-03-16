@@ -4,6 +4,7 @@
 コマンド | 用途
 --- | ---
 [`node show-argument.js`](./src/show-arguments.ts) | コマンドライン引数を表示する
+[`node update.js`](./src/update.ts) | 最新のコマンドに更新する
 
 
 ## 導入方法
@@ -13,11 +14,15 @@
 1. `.node-version` を確認し、必要なNode.js を整備する
 
 ### 更新
-1. 前回のものを削除する
-1. 「初回」と同様の手順を行う
+1. `node update.js` を実行する
 
 
 ## 備考
+### 環境変数
+名前 | 概要
+--- | ---
+`TEST_MODE` | `true` を指定した場合、開発用の設定を適用する
+
 ### 開発、リリースの流れなど
 [CONTRIBUTING](./CONTRIBUTING.md) を参照してください。
 

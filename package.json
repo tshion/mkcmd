@@ -1,6 +1,6 @@
 {
   "name": "mkcmd",
-  "version": "2025.3.9",
+  "version": "2025.3.16",
   "private": true,
   "scripts": {
     "clean": "gts clean",
@@ -9,13 +9,20 @@
     "prebuild": "node build.pre.js",
     "build": "node build.js",
     "build:show-arguments": "npm run build show-arguments",
-    "deploy": "npm-run-all build:*"
+    "build:update": "npm run build update",
+    "deploy": "npm-run-all build:*",
+    "test": "node --import tsx test/**/*.test.ts"
   },
   "devDependencies": {
+    "@octokit/core": "^6.1.4",
     "@types/node": "^20.17.19",
+    "@types/unzipper": "^0.10.11",
     "@vercel/ncc": "^0.38.3",
     "gts": "^6.0.2",
+    "node-fetch": "^2.7.0",
     "npm-run-all2": "^7.0.2",
-    "typescript": "5.7.3"
+    "tsx": "^4.19.3",
+    "typescript": "5.7.3",
+    "unzipper": "^0.12.3"
   }
 }
