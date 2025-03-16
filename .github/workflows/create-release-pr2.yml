@@ -41,10 +41,9 @@ jobs:
         env:
           BRANCH: ${{ steps.meta.outputs.branch }}
         run: |
-          git fetch origin released
-          git checkout released
           git switch --create "$BRANCH"
-          git merge --allow-unrelated-histories develop
+          git fetch origin released
+          git merge --allow-unrelated-histories --strategy=ours origin/released
 
       # https://github.com/tshion/can-create-release
       # - uses: tshion/can-create-release@0.1.1
