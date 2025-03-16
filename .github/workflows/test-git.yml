@@ -25,10 +25,16 @@ jobs:
       - name: Show git branches
         run: git branch
 
-      # https://github.com/actions/checkout
-      - uses: actions/checkout@v4
-        with:
-          ref: released
+      - name: Checkout git branch
+        run: |
+          git fetch origin released
+          git checkout released
+
+      - name: Show git branches
+        run: git branch
+
+      - name: Create a git branch
+        run: git switch --create test/branch
 
       - name: Show git branches
         run: git branch
