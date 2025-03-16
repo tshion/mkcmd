@@ -29,7 +29,21 @@ jobs:
         id: meta
         run: |
           date=$(bash .github/scripts/date.bash)
+          echo "branch=feature/${date}" >> "$GITHUB_OUTPUT"
           echo "version=$date" >> "$GITHUB_OUTPUT"
+
+      # https://github.com/tshion/apply-git-user
+      - uses: tshion/apply-git-user@2.1.1
+        with:
+          user: github-actions
+
+      - name: Create a working git branch
+        env:
+          BRANCH: ${{ steps.meta.outputs.branch }}
+        run: |
+          git switch --create "$BRANCH"
+          git fetch origin released
+          git merge --allow-unrelated-histories --strategy=ours origin/released
 
       # https://github.com/tshion/can-create-release
       - uses: tshion/can-create-release@0.1.1
@@ -56,11 +70,21 @@ jobs:
           VERSION: ${{ steps.meta.outputs.version }}
         run: bash .github/scripts/set-version.bash "$VERSION"
 
+      - name: git commit & push
+        env:
+          BRANCH: ${{ steps.meta.outputs.branch }}
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          git add package.json
+          git add package-lock.json
+          git commit --message "Update $VERSION"
+          git push --set-upstream origin "$BRANCH"
+
       - name: Generate diff notes
         id: notes
         env:
           GH_TOKEN: ${{ github.token }}
-          REF_NAME: ${{ github.ref_name }}
+          REF_NAME: ${{ steps.meta.outputs.branch }}
           REPO: ${{ github.repository }}
         run: |
           response=$(bash .github/scripts/presume-release-notes.bash "$REPO" "$REF_NAME")
@@ -77,23 +101,6 @@ jobs:
           File.open("PR_BODY", "w") { |file|
             file.write(text)
           }
-
-      # https://github.com/tshion/apply-git-user
-      - uses: tshion/apply-git-user@2.1.1
-        with:
-          user: github-actions
-
-      - name: git add & push
-        env:
-          VERSION: ${{ steps.meta.outputs.version }}
-        run: |
-          branch="feature/$VERSION"
-
-          git switch --create "$branch"
-          git add package.json
-          git add package-lock.json
-          git commit --message "Update $VERSION"
-          git push --set-upstream origin "$branch"
 
       - name: Create pull request
         env:
