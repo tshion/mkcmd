@@ -4,7 +4,7 @@
 # ※GitHub CLI のアクセス権限等の設定が必要
 #
 # $1 -> GitHub リポジトリ名 (※OWNER/REPO 表記)
-# $2 -> タグを付与する予定のGit ブランチ名
+# $2 -> Git タグを付与する予定のGit コミット
 
 gh api \
     --method POST \

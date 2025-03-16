@@ -84,7 +84,7 @@ jobs:
         id: notes
         env:
           GH_TOKEN: ${{ github.token }}
-          REF_NAME: released
+          REF_NAME: ${{ steps.meta.outputs.branch }}
           REPO: ${{ github.repository }}
         run: |
           response=$(bash .github/scripts/presume-release-notes.bash "$REPO" "$REF_NAME")
