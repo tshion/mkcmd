@@ -32,6 +32,11 @@ jobs:
           echo "branch=feature/${date}" >> "$GITHUB_OUTPUT"
           echo "version=$date" >> "$GITHUB_OUTPUT"
 
+      # https://github.com/tshion/apply-git-user
+      - uses: tshion/apply-git-user@2.1.1
+        with:
+          user: github-actions
+
       - name: Create a working git branch
         env:
           BRANCH: ${{ steps.meta.outputs.branch }}
@@ -65,12 +70,7 @@ jobs:
           VERSION: ${{ steps.meta.outputs.version }}
         run: bash .github/scripts/set-version.bash "$VERSION"
 
-      # https://github.com/tshion/apply-git-user
-      - uses: tshion/apply-git-user@2.1.1
-        with:
-          user: github-actions
-
-      - name: git add & push
+      - name: git commit & push
         env:
           BRANCH: ${{ steps.meta.outputs.branch }}
           VERSION: ${{ steps.meta.outputs.version }}
