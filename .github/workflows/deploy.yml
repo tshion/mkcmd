@@ -8,6 +8,7 @@ on:
       - released
     paths:
       - package.json
+      - package-lock.json
 
   workflow_dispatch:
     inputs:
@@ -23,7 +24,7 @@ concurrency:
 
 jobs:
   preparation:
-    if: ${{ github.ref_type == 'branch' }}
+    if: ${{ github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch' }}
     runs-on: ${{ inputs.osRunner || 'ubuntu-24.04' }}
     permissions:
       contents: write
