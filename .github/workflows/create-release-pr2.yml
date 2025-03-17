@@ -1,0 +1,111 @@
+name: (V2) Create a release pull request
+
+on:
+  workflow_dispatch:
+    inputs:
+      osRunner:
+        default: ubuntu-24.04
+        description: https://github.com/actions/runner-images
+        required: true
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  create-pr:
+    if: ${{ github.ref_type == 'branch' && github.ref_name == 'develop' }}
+    runs-on: ${{ inputs.osRunner }}
+    permissions:
+      contents: write
+      pull-requests: write
+    timeout-minutes: 5
+    steps:
+      # https://github.com/actions/checkout
+      - uses: actions/checkout@v4
+
+      - name: Format meta data
+        id: meta
+        run: |
+          date=$(bash .github/scripts/date.bash)
+          echo "branch=feature/${date}" >> "$GITHUB_OUTPUT"
+          echo "version=$date" >> "$GITHUB_OUTPUT"
+
+      # https://github.com/tshion/apply-git-user
+      - uses: tshion/apply-git-user@2.1.1
+        with:
+          user: github-actions
+
+      - name: Create a working git branch
+        env:
+          BRANCH: ${{ steps.meta.outputs.branch }}
+        run: |
+          git switch --create "$BRANCH"
+          git fetch origin released
+          git merge --allow-unrelated-histories --strategy=ours origin/released
+
+      # https://github.com/tshion/can-create-release
+      # - uses: tshion/can-create-release@0.1.1
+      #   with:
+      #     tag: ${{ steps.meta.outputs.version }}
+
+      # https://github.com/actions/setup-node
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+          cache-dependency-path: ./package-lock.json
+
+      - run: npm ci
+
+      - name: Check code style
+        run: npm run lint
+
+      - name: Run test
+        run: npm run test
+
+      - name: Set version
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: bash .github/scripts/set-version.bash "$VERSION"
+
+      - name: git commit & push
+        env:
+          BRANCH: ${{ steps.meta.outputs.branch }}
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          git add package.json
+          git add package-lock.json
+          git commit --message "Update $VERSION"
+          git push --set-upstream origin "$BRANCH"
+
+      - name: Generate diff notes
+        id: notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REF_NAME: ${{ steps.meta.outputs.branch }}
+          REPO: ${{ github.repository }}
+        run: |
+          response=$(bash .github/scripts/presume-release-notes.bash "$REPO" "$REF_NAME")
+          echo "response=$response" >> "$GITHUB_OUTPUT"
+
+      - name: Create a file for pull request body
+        shell: ruby {0}
+        env:
+          NOTE: ${{ fromJson(steps.notes.outputs.response).body }}
+        run: |
+          text = <<"BODY"
+            #{ENV['NOTE']}
+          BODY
+          File.open("PR_BODY", "w") { |file|
+            file.write(text)
+          }
+
+      - name: Create pull request
+        env:
+          BASE: released
+          GH_TOKEN: ${{ github.token }}
+          REVIEWER: tshion
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: gh pr create --base "$BASE" --reviewer "$REVIEWER" --title "Update $VERSION" --body-file PR_BODY
