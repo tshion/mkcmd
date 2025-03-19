@@ -11,12 +11,6 @@ on:
       - package-lock.json
 
   workflow_dispatch:
-    inputs:
-      osRunner:
-        default: ubuntu-24.04
-        description: https://github.com/actions/runner-images
-        required: true
-        type: string
 
 concurrency:
   group: ${{ github.workflow }}
@@ -25,7 +19,7 @@ concurrency:
 jobs:
   preparation:
     if: ${{ github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch' }}
-    runs-on: ${{ inputs.osRunner || 'ubuntu-24.04' }}
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     timeout-minutes: 15
@@ -54,7 +48,7 @@ jobs:
         id: zip
         working-directory: build
         env:
-          ZIP_NAME: "mkcmd_${{ steps.meta.outputs.version }}.zip"
+          ZIP_NAME: 'mkcmd_${{ steps.meta.outputs.version }}.zip'
         run: |
           zip -X -r "$ZIP_NAME" .
           echo "name=$ZIP_NAME" >> "$GITHUB_OUTPUT"
@@ -63,7 +57,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.meta.outputs.version }}
-          ZIP_PATH: "build/${{ steps.zip.outputs.name }}"
+          ZIP_PATH: 'build/${{ steps.zip.outputs.name }}'
         run: |
           git tag "$VERSION"
           git push origin "$VERSION"
