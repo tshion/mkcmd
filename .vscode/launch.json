@@ -1,0 +1,27 @@
+{
+  // IntelliSense を使用して利用可能な属性を学べます。
+  // 既存の属性の説明をホバーして表示します。
+  // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "show-arguments",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/show-arguments.ts",
+      "preLaunchTask": "Build: show-arguments",
+      "outFiles": ["${workspaceFolder}/build/*.js"]
+    },
+    {
+      "name": "update",
+      "type": "node",
+      "request": "launch",
+      "env": {
+        "TEST_MODE": "true"
+      },
+      "program": "${workspaceFolder}/src/update.ts",
+      "preLaunchTask": "Build: update",
+      "outFiles": ["${workspaceFolder}/build/*.js"]
+    }
+  ]
+}

@@ -4,23 +4,26 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Run: show-arguments",
+      "label": "Build: show-arguments",
       "type": "process",
-      "command": "node",
-      "args": ["build/show-arguments.js"],
-      "dependsOn": ["npm: build:show-arguments"]
-    },
-    {
-      "label": "Run: update",
-      "type": "process",
-      "command": "node",
-      "args": ["build/update.js"],
+      "command": "npm",
+      "args": ["run", "build", "show-arguments"],
       "options": {
         "env": {
-          "TEST_MODE": "true"
+          "DEBUG": "true"
         }
-      },
-      "dependsOn": ["npm: build:update"]
+      }
+    },
+    {
+      "label": "Build: update",
+      "type": "process",
+      "command": "npm",
+      "args": ["run", "build", "update"],
+      "options": {
+        "env": {
+          "DEBUG": "true"
+        }
+      }
     }
   ]
 }
