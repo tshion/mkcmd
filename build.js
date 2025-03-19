@@ -5,6 +5,11 @@ const {argv} = require('node:process');
 /**
  * 指定されたコマンド実装をビルドする
  *
+ * @example
+ * ``` sh
+ * node build.js "${filename}"
+ * ```
+ *
  * @param {string} filename コマンド実装のファイル名
  */
 async function main(filename) {
