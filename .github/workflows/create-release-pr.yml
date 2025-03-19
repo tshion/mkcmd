@@ -85,7 +85,6 @@ jobs:
           echo "response=$response" >> "$GITHUB_OUTPUT"
 
       - name: Create a file for pull request body
-        shell: ruby {0}
         env:
           FILENAME: PR_BODY
           NOTE: ${{ fromJson(steps.notes.outputs.response).body }}
