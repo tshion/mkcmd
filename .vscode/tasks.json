@@ -7,28 +7,20 @@
       "label": "Run: show-arguments",
       "type": "process",
       "command": "node",
-      "args": [
-        "build/show-arguments.js",
-      ],
-      "dependsOn": [
-        "npm: build:show-arguments",
-      ]
+      "args": ["build/show-arguments.js"],
+      "dependsOn": ["npm: build:show-arguments"]
     },
     {
       "label": "Run: update",
       "type": "process",
       "command": "node",
-      "args": [
-        "build/update.js",
-      ],
+      "args": ["build/update.js"],
       "options": {
         "env": {
-          "TEST_MODE": "true",
+          "TEST_MODE": "true"
         }
       },
-      "dependsOn": [
-        "npm: build:update",
-      ]
+      "dependsOn": ["npm: build:update"]
     }
   ]
 }
