@@ -18,10 +18,16 @@
 
 
 ## 備考
-### 開発、リリースの流れなど
-[CONTRIBUTING](./CONTRIBUTING.md) を参照してください。
+### バージョン表記
+リリース日 `YYYY/MM/DD` と1桁のビルド番号 `{build}` を用いて下記のように表記します。
 
-### バージョンについて
-リリース日を `yyyy.MM.dd` 形式にしたものが設定されます。
+形式 | 表記
+--- | ---
+文字列 | `YYYY.MM.DD{build}`
+文字列<br />([node-semver](https://github.com/npm/node-semver)) | `Y.M.D{build}`
+番号 | `100,000 * YYYY + 1,000 * MM + 10 * DD + {build}`
 
 ※開発環境は `0.0.0` で固定
+
+### 開発、リリースの流れなど
+[CONTRIBUTING](./CONTRIBUTING.md) を参照してください。
