@@ -9,8 +9,8 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/src/show-arguments.ts",
-      "preLaunchTask": "Build: show-arguments",
-      "outFiles": ["${workspaceFolder}/build/*.js"]
+      "preLaunchTask": "Debug Build: show-arguments",
+      "outFiles": ["${workspaceFolder}/build/**/*.js"]
     },
     {
       "name": "update",
@@ -20,8 +20,8 @@
         "TEST_MODE": "true"
       },
       "program": "${workspaceFolder}/src/update.ts",
-      "preLaunchTask": "Build: update",
-      "outFiles": ["${workspaceFolder}/build/*.js"]
+      "preLaunchTask": "Debug Build: update",
+      "outFiles": ["${workspaceFolder}/build/**/*.js"]
     }
   ]
 }
