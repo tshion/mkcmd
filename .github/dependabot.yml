@@ -12,3 +12,18 @@ updates:
       day: tuesday
     assignees:
       - tshion
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: tuesday
+    assignees:
+      - tshion
+    ignore:
+      # res/.node-version の設定に合わせるため
+      - dependency-name: "@types/node"
+        versions: [">=21.0.0"]
+      # CommonJS のため
+      - dependency-name: "node-fetch"
+        versions: [">=3.0.0"]
