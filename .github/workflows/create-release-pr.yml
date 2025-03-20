@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   create-pr:
-    if: ${{ github.ref_type == 'branch' && github.ref_name == 'develop' }}
+    if: ${{ 0 <= inputs.versionBuild && inputs.versionBuild < 10 && github.ref_type == 'branch' && github.ref_name == 'develop' }}
     runs-on: ubuntu-24.04
     permissions:
       contents: write

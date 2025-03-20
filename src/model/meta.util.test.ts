@@ -21,8 +21,12 @@ void test('parseVersionCode', async context => {
 
   await context.test('failures', async () => {
     throws(() => parseVersionCode('0.0'), SyntaxError);
+    throws(() => parseVersionCode('0.0.'), SyntaxError);
     throws(() => parseVersionCode('0.0.0.0'), SyntaxError);
+    throws(() => parseVersionCode('0.0.0.0.'), SyntaxError);
+    throws(() => parseVersionCode('0.0.0.0.0'), SyntaxError);
     throws(() => parseVersionCode('a.b.c'), SyntaxError);
+    throws(() => parseVersionCode('..'), SyntaxError);
 
     throws(() => parseVersionCode('10000.1.10'), RangeError);
 
