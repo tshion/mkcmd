@@ -8,14 +8,9 @@ on:
       - released
     paths:
       - package.json
+      - package-lock.json
 
   workflow_dispatch:
-    inputs:
-      osRunner:
-        default: ubuntu-24.04
-        description: https://github.com/actions/runner-images
-        required: true
-        type: string
 
 concurrency:
   group: ${{ github.workflow }}
@@ -23,14 +18,20 @@ concurrency:
 
 jobs:
   preparation:
-    if: ${{ github.ref_type == 'branch' }}
-    runs-on: ${{ inputs.osRunner || 'ubuntu-24.04' }}
+    if: ${{ github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     timeout-minutes: 15
     steps:
       # https://github.com/actions/checkout
       - uses: actions/checkout@v4
+
+      - name: Get version name
+        id: meta
+        run: |
+          version=$(bash .github/scripts/get-version.bash)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
       # https://github.com/actions/setup-node
       - uses: actions/setup-node@v4
@@ -41,19 +42,13 @@ jobs:
 
       - run: npm ci
 
-      - name: Get version name
-        id: meta
-        run: |
-          version=$(bash .github/scripts/get-version.bash)
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-
       - run: npm run deploy
 
       - name: Zip files
         id: zip
         working-directory: build
         env:
-          ZIP_NAME: "mkcmd_${{ steps.meta.outputs.version }}.zip"
+          ZIP_NAME: 'mkcmd_${{ steps.meta.outputs.version }}.zip'
         run: |
           zip -X -r "$ZIP_NAME" .
           echo "name=$ZIP_NAME" >> "$GITHUB_OUTPUT"
@@ -62,7 +57,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.meta.outputs.version }}
-          ZIP_PATH: "build/${{ steps.zip.outputs.name }}"
+          ZIP_PATH: 'build/${{ steps.zip.outputs.name }}'
         run: |
           git tag "$VERSION"
           git push origin "$VERSION"
