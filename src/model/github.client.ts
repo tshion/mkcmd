@@ -9,6 +9,8 @@ const {Octokit} = require('@octokit/core');
 
 /**
  * GitHub とのAPI クライアント
+ *
+ * * 環境変数 `TEST_MODE` が `true` の場合、通信レスポンスのキャッシュが優先されます
  */
 export class GitHubClient {
   public static async new(auth?: any) {

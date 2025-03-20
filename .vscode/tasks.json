@@ -4,7 +4,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build: show-arguments",
+      "label": "Debug Build: show-arguments",
       "type": "process",
       "command": "npm",
       "args": ["run", "build", "show-arguments"],
@@ -15,7 +15,7 @@
       }
     },
     {
-      "label": "Build: update",
+      "label": "Debug Build: update",
       "type": "process",
       "command": "npm",
       "args": ["run", "build", "update"],
