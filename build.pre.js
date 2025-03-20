@@ -4,6 +4,11 @@ const {env} = require('node:process');
 
 /**
  * ビルド前の処理
+ *
+ * @example
+ * ``` sh
+ * node build.pre.js
+ * ```
  */
 async function main() {
   const outputDirPath = path.join(__dirname, 'build');

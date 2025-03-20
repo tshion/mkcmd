@@ -3,12 +3,12 @@ import {argv} from 'node:process';
 /**
  * 受け取ったコマンドライン引数の表示
  *
- * @param args コマンドライン引数
- *
  * @example
- * ``` shell
- * node show-arguments.js {{ ??? }} ...
+ * ``` sh
+ * node show-arguments.js "${arg}" ...
  * ```
+ *
+ * @param args コマンドライン引数
  */
 function main(args: string[]) {
   args.forEach((value, index) => {

@@ -18,7 +18,7 @@ const fetch = require('node-fetch');
  * 最新のコマンドに更新する
  *
  * @example
- * ``` shell
+ * ``` sh
  * node update.js
  * ```
  */
