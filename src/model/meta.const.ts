@@ -7,5 +7,11 @@ export const commandDirPath = resolve(argv[1], '..');
 /** キャッシュの出力先 */
 export const cacheDirPath = resolve(commandDirPath, '.cache');
 
+/** GitHub のリポジトリ情報 */
+export const githubInfo = {
+  owner: 'tshion',
+  repo: 'mkcmd',
+};
+
 /** ユーザーエージェント文字列 */
-export const userAgent = 'io.github.tshion.mkcmd';
+export const userAgent = `io.github.${githubInfo.owner}.${githubInfo.repo}`;

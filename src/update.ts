@@ -5,7 +5,7 @@ import {resolve} from 'node:path';
 import {pipeline} from 'node:stream/promises';
 import {Open} from 'unzipper';
 import {GitHubClient} from './model/github.client';
-import {commandDirPath, userAgent} from './model/meta.const';
+import {commandDirPath, githubInfo, userAgent} from './model/meta.const';
 import {parseVersionCode, readVersionText} from './model/meta.util';
 
 const fetch = require('node-fetch');
@@ -27,8 +27,8 @@ async function main() {
 
   const githubClient = await GitHubClient.new();
   const latestReleaseResponse = await githubClient.getLatestRelease(
-    'tshion',
-    'mkcmd',
+    githubInfo.owner,
+    githubInfo.repo,
   );
   const remoteVersionText = latestReleaseResponse.data.tag_name;
   if (parseVersionCode(remoteVersionText) <= localVersion) {
