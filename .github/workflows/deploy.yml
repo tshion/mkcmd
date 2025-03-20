@@ -27,6 +27,12 @@ jobs:
       # https://github.com/actions/checkout
       - uses: actions/checkout@v4
 
+      - name: Get version name
+        id: meta
+        run: |
+          version=$(bash .github/scripts/get-version.bash)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
       # https://github.com/actions/setup-node
       - uses: actions/setup-node@v4
         with:
@@ -35,12 +41,6 @@ jobs:
           cache-dependency-path: ./package-lock.json
 
       - run: npm ci
-
-      - name: Get version name
-        id: meta
-        run: |
-          version=$(bash .github/scripts/get-version.bash)
-          echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - run: npm run deploy
 

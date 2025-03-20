@@ -2,6 +2,12 @@ name: Create a release pull request
 
 on:
   workflow_dispatch:
+    inputs:
+      versionBuild:
+        description: 'バージョン情報: build(1桁)'
+        required: true
+        default: 0
+        type: number
 
 concurrency:
   group: ${{ github.workflow }}
@@ -21,10 +27,12 @@ jobs:
 
       - name: Format meta data
         id: meta
+        env:
+          BUILD: ${{ inputs.versionBuild }}
         run: |
-          date=$(bash .github/scripts/date.bash)
-          echo "branch=feature/${date}" >> "$GITHUB_OUTPUT"
-          echo "version=$date" >> "$GITHUB_OUTPUT"
+          version="$(bash .github/scripts/date.bash)${BUILD}"
+          echo "branch=feature/${version}" >> "$GITHUB_OUTPUT"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
 
       # https://github.com/tshion/can-create-release
       - uses: tshion/can-create-release@0.1.1
