@@ -27,6 +27,14 @@ async function main() {
 `,
     {encoding: 'utf-8'},
   );
+  await writeFile(
+    join(__dirname, 'src', 'build.env.ts'),
+    `export const buildEnv = {
+  testMode: ${!!(env.TEST_MODE && env.TEST_MODE.toLowerCase() === 'true')},
+};
+`,
+    {encoding: 'utf-8'},
+  );
 
   // バージョン情報の配置
   const packageVersion = `${env.npm_package_version}`;
