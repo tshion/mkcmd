@@ -2,8 +2,8 @@
 import {existsSync} from 'node:fs';
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
-import {env} from 'node:process';
-import {cacheDirPath, userAgent} from './meta.const';
+import {buildEnv} from '../build.env';
+import {cacheDirPath, userAgent} from './meta.util';
 
 const {Octokit} = require('@octokit/core');
 
@@ -14,25 +14,21 @@ const {Octokit} = require('@octokit/core');
  */
 export class GitHubClient {
   public static async new(auth?: any) {
-    const useLocalCache = env.TEST_MODE?.toLowerCase() === 'true';
-    if (useLocalCache && !existsSync(cacheDirPath)) {
+    if (buildEnv.testMode && !existsSync(cacheDirPath)) {
       await mkdir(cacheDirPath, {recursive: true});
     }
     const client = new Octokit({
       auth: auth,
       userAgent: userAgent,
     });
-    return new GitHubClient(client, useLocalCache);
+    return new GitHubClient(client);
   }
 
-  private constructor(
-    private readonly octokit: any,
-    private readonly useLocalCache: Boolean,
-  ) {}
+  private constructor(private readonly octokit: any) {}
 
   private async _exec(filename: string, requestCallback: () => Promise<any>) {
     const cacheFilePath = join(cacheDirPath, `${filename}.json`);
-    if (this.useLocalCache && existsSync(cacheFilePath)) {
+    if (buildEnv.testMode && existsSync(cacheFilePath)) {
       const text = await readFile(cacheFilePath, {encoding: 'utf-8'});
       try {
         const obj = JSON.parse(text);
@@ -44,7 +40,7 @@ export class GitHubClient {
     }
 
     const response = await requestCallback();
-    if (this.useLocalCache) {
+    if (buildEnv.testMode) {
       await writeFile(cacheFilePath, JSON.stringify(response, undefined, 4), {
         encoding: 'utf-8',
       });
