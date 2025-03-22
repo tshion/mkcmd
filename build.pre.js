@@ -3,6 +3,7 @@ const {join} = require('node:path');
 const {env} = require('node:process');
 // eslint-disable-next-line n/no-extraneous-require
 const {major, minor, patch} = require('semver');
+const packageJson = require('./package.json');
 
 /**
  * ビルドの前処理
@@ -30,6 +31,10 @@ async function main() {
   await writeFile(
     join(__dirname, 'src', 'build.env.ts'),
     `export const buildEnv = {
+  github: {
+    owner: '${packageJson.github.owner}',
+    repo: '${packageJson.github.repo}',
+  },
   testMode: ${!!(env.TEST_MODE && env.TEST_MODE.toLowerCase() === 'true')},
 };
 `,
@@ -37,7 +42,7 @@ async function main() {
   );
 
   // バージョン情報の配置
-  const packageVersion = `${env.npm_package_version}`;
+  const packageVersion = `${packageJson.version}`;
   const versionMajor = `${major(packageVersion)}`.padStart(4, '0');
   const versionMinor = `${minor(packageVersion)}`.padStart(2, '0');
   const versionPatchBuild = `${patch(packageVersion)}`.padStart(3, '0');

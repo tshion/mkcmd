@@ -1,6 +1,10 @@
 {
   "name": "mkcmd",
   "version": "0.0.0",
+  "github": {
+    "owner": "tshion",
+    "repo": "mkcmd"
+  },
   "private": true,
   "scripts": {
     "clean": "gts clean",

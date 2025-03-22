@@ -3,7 +3,7 @@ import {existsSync} from 'node:fs';
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {buildEnv} from '../build.env';
-import {cacheDirPath, userAgent} from './meta.const';
+import {cacheDirPath, userAgent} from './meta.util';
 
 const {Octokit} = require('@octokit/core');
 

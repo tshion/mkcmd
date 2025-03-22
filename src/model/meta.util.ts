@@ -1,9 +1,19 @@
 import {existsSync} from 'node:fs';
 import {readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
+import {argv} from 'node:process';
 // eslint-disable-next-line n/no-extraneous-import
 import {clean, major, minor, patch, prerelease, valid} from 'semver';
-import {commandDirPath} from './meta.const';
+import {buildEnv} from '../build.env';
+
+/** コマンドが配置されているディレクトリーのパス */
+export const commandDirPath = resolve(argv[1], '..');
+
+/** キャッシュの出力先 */
+export const cacheDirPath = resolve(commandDirPath, '.cache');
+
+/** ユーザーエージェント文字列 */
+export const userAgent = `io.github.${buildEnv.github.owner}.${buildEnv.github.repo}`;
 
 /**
  * バージョン番号の算出
