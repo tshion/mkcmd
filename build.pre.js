@@ -1,11 +1,11 @@
 const {cp, writeFile} = require('node:fs/promises');
-const path = require('node:path');
+const {join} = require('node:path');
 const {env} = require('node:process');
 // eslint-disable-next-line n/no-extraneous-require
 const {major, minor, patch} = require('semver');
 
 /**
- * ビルド前の処理
+ * ビルドの前処理
  *
  * @example
  * ``` sh
@@ -13,10 +13,20 @@ const {major, minor, patch} = require('semver');
  * ```
  */
 async function main() {
-  const outputDirPath = path.join(__dirname, 'build');
+  const outputDirPath = join(__dirname, 'build');
 
   // res/ の内容をそのままコピー
-  await cp(path.join(__dirname, 'res'), outputDirPath, {recursive: true});
+  await cp(join(__dirname, 'res'), outputDirPath, {recursive: true});
+
+  // 環境変数の書き出し
+  await writeFile(
+    join(__dirname, 'build.env.js'),
+    `module.exports = {
+  isDebug: ${!!(env.DEBUG && env.DEBUG.toLowerCase() === 'true')},
+};
+`,
+    {encoding: 'utf-8'},
+  );
 
   // バージョン情報の配置
   const packageVersion = `${env.npm_package_version}`;
@@ -24,11 +34,9 @@ async function main() {
   const versionMinor = `${minor(packageVersion)}`.padStart(2, '0');
   const versionPatchBuild = `${patch(packageVersion)}`.padStart(3, '0');
   await writeFile(
-    path.join(outputDirPath, '.version'),
+    join(outputDirPath, '.version'),
     `${versionMajor}.${versionMinor}.${versionPatchBuild}`,
-    {
-      encoding: 'utf-8',
-    },
+    {encoding: 'utf-8'},
   );
 }
 

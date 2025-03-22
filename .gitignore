@@ -225,3 +225,4 @@ $RECYCLE.BIN/
 ### Project ###
 ###############
 build/
+build.env.js
