@@ -15,7 +15,7 @@
     "build:show-arguments": "npm run build show-arguments",
     "build:update": "npm run build update",
     "deploy": "npm-run-all build:*",
-    "test": "node --import tsx src/**/*.test.ts"
+    "test": "node --import tsx --test src/**/*.test.ts"
   },
   "devDependencies": {
     "@octokit/core": "^6.1.4",
