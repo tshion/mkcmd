@@ -1,6 +1,9 @@
+import {execSync} from 'node:child_process';
 import {writeFile} from 'node:fs/promises';
 import {argv} from 'node:process';
 import {simpleGit} from 'simple-git';
+import {commandDirPath} from './model/meta.util';
+import {join} from 'node:path';
 
 /**
  * Git ログの取得
@@ -21,9 +24,8 @@ async function main(gitDirPath: string, outputPath: string) {
     throw Error('outputPath is required');
   }
 
-  const git = simpleGit(gitDirPath);
-
-  const log = await git.raw([
+  const gitLogPath = join(commandDirPath, 'git_log.txt');
+  const gitLog = await simpleGit(gitDirPath).raw([
     'log',
     '--all',
     '--numstat',
@@ -31,9 +33,13 @@ async function main(gitDirPath: string, outputPath: string) {
     '--pretty=format:--%h--%ad--%aN',
     '--no-renames',
   ]);
-  await writeFile(outputPath, log, {
-    encoding: 'utf-8',
-  });
+  await writeFile(gitLogPath, gitLog, {encoding: 'utf-8'});
+
+  const maatPath = join(commandDirPath, 'code-maat-1.0.4-standalone.jar');
+  const dataRevisions = execSync(
+    `java -jar ${maatPath} -l ${gitLogPath} -c git2 -a revisions`,
+  );
+  await writeFile(outputPath, dataRevisions, {encoding: 'utf-8'});
 }
 
 +(async function () {
