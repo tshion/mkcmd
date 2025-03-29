@@ -1,9 +1,9 @@
 import {execSync} from 'node:child_process';
-import {writeFile} from 'node:fs/promises';
+import {rm, writeFile} from 'node:fs/promises';
+import {join} from 'node:path';
 import {argv} from 'node:process';
 import {simpleGit} from 'simple-git';
 import {commandDirPath} from './model/meta.util';
-import {join} from 'node:path';
 
 /**
  * Git ログの取得
@@ -39,7 +39,16 @@ async function main(gitDirPath: string, outputPath: string) {
   const dataRevisions = execSync(
     `java -jar ${maatPath} -l ${gitLogPath} -c git2 -a revisions`,
   );
-  await writeFile(outputPath, dataRevisions, {encoding: 'utf-8'});
+  const revisionsPath = join(commandDirPath, 'revisions.csv');
+  await writeFile(revisionsPath, dataRevisions, {encoding: 'utf-8'});
+  await rm(gitLogPath);
+
+  const clocPath = join(commandDirPath, 'cloc-2.04.pl');
+  const dataCloc = execSync(
+    `perl ${clocPath} ${gitDirPath} --unix --by-file --csv --quiet`,
+  );
+  const complexityPath = join(commandDirPath, 'complexity.csv');
+  await writeFile(complexityPath, dataCloc, {encoding: 'utf-8'});
 }
 
 +(async function () {
