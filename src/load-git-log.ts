@@ -70,7 +70,7 @@ async function main(gitDirPath: string, outputPath: string) {
     .filter(line => !!line.trim())
     .forEach(line => {
       const [entity, revs] = line.split(',');
-      const code = complexity.get(`${gitDirPath}${entity}`);
+      const code = complexity.get(join(gitDirPath, entity));
       if (code) {
         result.push([entity, revs, code]);
       }
