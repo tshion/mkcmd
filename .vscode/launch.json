@@ -5,6 +5,15 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "load-git-log",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/load-git-log.ts",
+      "args": ["${input:gitDirPath}", "${input:outputPath}"],
+      "preLaunchTask": "Debug Build: load-git-log",
+      "outFiles": ["${workspaceFolder}/build/**/*.js"]
+    },
+    {
       "name": "show-arguments",
       "type": "node",
       "request": "launch",
@@ -22,6 +31,18 @@
       "program": "${workspaceFolder}/src/update.ts",
       "preLaunchTask": "Debug Build: update",
       "outFiles": ["${workspaceFolder}/build/**/*.js"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "gitDirPath",
+      "type": "promptString",
+      "description": ".git が配置されているディレクトリーパス"
+    },
+    {
+      "id": "outputPath",
+      "type": "promptString",
+      "description": "出力先"
     }
   ]
 }
