@@ -1,5 +1,5 @@
 import {execSync} from 'node:child_process';
-import {rm, writeFile} from 'node:fs/promises';
+import {writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {argv} from 'node:process';
 import {simpleGit} from 'simple-git';
@@ -24,6 +24,8 @@ async function main(gitDirPath: string, outputPath: string) {
     throw Error('outputPath is required');
   }
 
+  // Git ログから変更頻度の算出
+  const revisionsPath = join(commandDirPath, 'revisions.csv');
   const gitLogPath = join(commandDirPath, 'git_log.txt');
   const gitLog = await simpleGit(gitDirPath).raw([
     'log',
@@ -32,23 +34,52 @@ async function main(gitDirPath: string, outputPath: string) {
     '--date=short',
     '--pretty=format:--%h--%ad--%aN',
     '--no-renames',
+    // TODO: いつから取得するかの指定
   ]);
   await writeFile(gitLogPath, gitLog, {encoding: 'utf-8'});
 
-  const maatPath = join(commandDirPath, 'code-maat-1.0.4-standalone.jar');
-  const dataRevisions = execSync(
-    `java -jar ${maatPath} -l ${gitLogPath} -c git2 -a revisions`,
-  );
-  const revisionsPath = join(commandDirPath, 'revisions.csv');
-  await writeFile(revisionsPath, dataRevisions, {encoding: 'utf-8'});
-  await rm(gitLogPath);
+  const rawRevisions = execSync(
+    `java -jar ${join(commandDirPath, 'code-maat-1.0.4-standalone.jar')} -l ${gitLogPath} -c git2 -a revisions`,
+  ).toString('utf-8');
+  await writeFile(revisionsPath, rawRevisions, {encoding: 'utf-8'});
 
-  const clocPath = join(commandDirPath, 'cloc-2.04.pl');
-  const dataCloc = execSync(
-    `perl ${clocPath} ${gitDirPath} --unix --by-file --csv --quiet`,
-  );
+  // ファイル行数の算出
   const complexityPath = join(commandDirPath, 'complexity.csv');
-  await writeFile(complexityPath, dataCloc, {encoding: 'utf-8'});
+  const rawCloc = execSync(
+    `perl ${join(commandDirPath, 'cloc-2.04.pl')} ${gitDirPath} --unix --by-file --csv --quiet`,
+  ).toString('utf-8');
+  await writeFile(complexityPath, rawCloc, {encoding: 'utf-8'});
+
+  // データの統合
+  const complexity = new Map<string, string>();
+  rawCloc
+    .split('\n')
+    .slice(1)
+    .filter(line => !!line.trim())
+    .forEach(line => {
+      const [_1, filename, _2, _3, code] = line.split(',');
+      if (filename.trim()) {
+        complexity.set(filename, code);
+      }
+    });
+
+  const result = [['module', 'revisions', 'code']];
+  rawRevisions
+    .split('\n')
+    .slice(1)
+    .filter(line => !!line.trim())
+    .forEach(line => {
+      const [entity, revs] = line.split(',');
+      const code = complexity.get(`${gitDirPath}${entity}`);
+      if (code) {
+        result.push([entity, revs, code]);
+      }
+    });
+  await writeFile(
+    outputPath,
+    result.map(tokens => tokens.join(', ')).join('\n'),
+    {encoding: 'utf-8'},
+  );
 }
 
 +(async function () {
