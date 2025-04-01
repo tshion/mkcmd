@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@octokit/core": "^6.1.4",
-    "@types/node": "^20.17.19",
+    "@types/node": "^20.17.28",
     "@types/unzipper": "^0.10.11",
     "@vercel/ncc": "^0.38.3",
     "gts": "^6.0.2",
