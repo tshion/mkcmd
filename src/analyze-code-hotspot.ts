@@ -41,7 +41,11 @@ async function main(gitDirPath: string, outputDirPath: string, after?: string) {
     '--pretty=format:--%h--%ad--%aN',
     '--no-renames',
   ];
-  if (after) {
+  if (
+    after &&
+    after.length === 10 &&
+    /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(after)
+  ) {
     gitCommands.push(`--after=${after}`);
   }
   const gitLog = await simpleGit(gitDirPath).raw(gitCommands);
@@ -92,5 +96,5 @@ async function main(gitDirPath: string, outputDirPath: string, after?: string) {
 }
 
 +(async function () {
-  await main(argv[2], argv[3]);
+  await main(argv[2], argv[3], argv[4]);
 })();
