@@ -3,7 +3,7 @@
 
 コマンド | 用途
 --- | ---
-[`node load-git-log.js {gitDirPath} {outputPath}`](./src/load-git-log.ts) | Git ログの取得
+[`node analyze-code-hotspot.js {gitDirPath} {outputDirPath}`](./src/analyze-code-hotspot.ts)<br />(※`git`, `java`, `perl` 環境が必要) | Git の履歴から変更頻度とコード規模が交差するホットスポットを抽出する
 [`node show-argument.js`](./src/show-arguments.ts) | コマンドライン引数を表示する
 [`node update.js`](./src/update.ts) | 最新のコマンドに更新する
 
@@ -13,9 +13,7 @@
 1. GitHub Release に添付されているZip ファイルをダウンロードする
 1. ダウンロードしたファイルを任意の場所で解凍する
 1. `.node-version` を確認し、必要なNode.js を整備する
-1. `git` が無い場合はインストールする
-1. `java` が無い場合は8以降をインストールする
-1. `perl` が無い場合はインストールする
+1. (必要に応じて) コマンド実行に必要な環境を整備する
 
 ### 更新
 1. `node update.js` を実行する

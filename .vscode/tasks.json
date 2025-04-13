@@ -4,10 +4,10 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Debug Build: load-git-log",
+      "label": "Debug Build: analyze-code-hotspot",
       "type": "process",
       "command": "npm",
-      "args": ["run", "build", "load-git-log"],
+      "args": ["run", "build", "analyze-code-hotspot"],
       "options": {
         "env": {
           "DEBUG": "true"

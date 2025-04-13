@@ -5,12 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "load-git-log",
+      "name": "analyze-code-hotspot",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/src/load-git-log.ts",
-      "args": ["${input:gitDirPath}", "${input:outputPath}"],
-      "preLaunchTask": "Debug Build: load-git-log",
+      "program": "${workspaceFolder}/src/analyze-code-hotspot.ts",
+      "args": ["${input:gitDirPath}", "${input:outputDirPath}"],
+      "preLaunchTask": "Debug Build: analyze-code-hotspot",
       "outFiles": ["${workspaceFolder}/build/**/*.js"]
     },
     {
@@ -40,9 +40,9 @@
       "description": ".git が配置されているディレクトリーパス"
     },
     {
-      "id": "outputPath",
+      "id": "outputDirPath",
       "type": "promptString",
-      "description": "出力先"
+      "description": "出力先のディレクトリーパス"
     }
   ]
 }

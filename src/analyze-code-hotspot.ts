@@ -6,22 +6,27 @@ import {simpleGit} from 'simple-git';
 import {commandDirPath} from './model/meta.util';
 
 /**
- * Git ログの取得
+ * Git の履歴から変更頻度とコード規模が交差するホットスポットを抽出する
+ *
+ * ## Requirements
+ * * `git` コマンドを実行できる
+ * * `java` コマンドを実行できる
+ * * `perl` コマンドを実行できる
  *
  * @example
  * ``` sh
- * node load-git-log.js {gitDirPath} {outputPath}
+ * node analyze-code-hotspot.js {gitDirPath} {outputDirPath}
  * ```
  *
  * @param gitDirPath .git が配置されているディレクトリーパス
- * @param outputPath 出力先のパス
+ * @param outputDirPath 出力先のディレクトリーパス
  */
-async function main(gitDirPath: string, outputPath: string) {
+async function main(gitDirPath: string, outputDirPath: string) {
   if (!gitDirPath) {
     throw Error('gitDirPath is required');
   }
-  if (!outputPath) {
-    throw Error('outputPath is required');
+  if (!outputDirPath) {
+    throw Error('outputDirPath is required');
   }
 
   // Git ログから変更頻度の算出
@@ -76,7 +81,7 @@ async function main(gitDirPath: string, outputPath: string) {
       }
     });
   await writeFile(
-    outputPath,
+    join(outputDirPath, 'hotspot.csv'),
     result.map(tokens => tokens.join(', ')).join('\n'),
     {encoding: 'utf-8'},
   );

@@ -12,7 +12,7 @@
     "lint": "gts lint",
     "prebuild": "node build.pre.js",
     "build": "node build.js",
-    "build:load-git-log": "npm run build load-git-log",
+    "build:analyze-code-hotspot": "npm run build analyze-code-hotspot",
     "build:show-arguments": "npm run build show-arguments",
     "build:update": "npm run build update",
     "deploy": "npm-run-all build:*",
