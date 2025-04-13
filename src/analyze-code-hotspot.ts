@@ -6,7 +6,7 @@ import {simpleGit} from 'simple-git';
 import {commandDirPath} from './model/meta.util';
 
 /**
- * Git の履歴から変更頻度とコード規模が交差するホットスポットを抽出する
+ * Git の履歴からファイル毎の変更頻度とコード規模をCSV 出力する
  *
  * ## Requirements
  * * `git` コマンドを実行できる
@@ -15,13 +15,14 @@ import {commandDirPath} from './model/meta.util';
  *
  * @example
  * ``` sh
- * node analyze-code-hotspot.js {gitDirPath} {outputDirPath}
+ * node analyze-code-hotspot.js {gitDirPath} {outputDirPath} {after}
  * ```
  *
  * @param gitDirPath .git が配置されているディレクトリーパス
  * @param outputDirPath 出力先のディレクトリーパス
+ * @param after (省略可能) Git ログの取得開始日 (YYYY-MM-DD 形式)
  */
-async function main(gitDirPath: string, outputDirPath: string) {
+async function main(gitDirPath: string, outputDirPath: string, after?: string) {
   if (!gitDirPath) {
     throw Error('gitDirPath is required');
   }
@@ -32,15 +33,18 @@ async function main(gitDirPath: string, outputDirPath: string) {
   // Git ログから変更頻度の算出
   const revisionsPath = join(commandDirPath, 'revisions.csv');
   const gitLogPath = join(commandDirPath, 'git_log.txt');
-  const gitLog = await simpleGit(gitDirPath).raw([
+  const gitCommands = [
     'log',
     '--all',
     '--numstat',
     '--date=short',
     '--pretty=format:--%h--%ad--%aN',
     '--no-renames',
-    // TODO: いつから取得するかの指定
-  ]);
+  ];
+  if (after) {
+    gitCommands.push(`--after=${after}`);
+  }
+  const gitLog = await simpleGit(gitDirPath).raw(gitCommands);
   await writeFile(gitLogPath, gitLog, {encoding: 'utf-8'});
 
   const rawRevisions = execSync(

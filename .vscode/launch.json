@@ -9,7 +9,11 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/src/analyze-code-hotspot.ts",
-      "args": ["${input:gitDirPath}", "${input:outputDirPath}"],
+      "args": [
+        "${input:gitDirPath}",
+        "${input:outputDirPath}",
+        "${input:gitLogStart}"
+      ],
       "preLaunchTask": "Debug Build: analyze-code-hotspot",
       "outFiles": ["${workspaceFolder}/build/**/*.js"]
     },
@@ -38,6 +42,11 @@
       "id": "gitDirPath",
       "type": "promptString",
       "description": ".git が配置されているディレクトリーパス"
+    },
+    {
+      "id": "gitLogStart",
+      "type": "promptString",
+      "description": "Git ログの取得開始日 (YYYY-MM-DD 形式)"
     },
     {
       "id": "outputDirPath",
