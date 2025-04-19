@@ -4,6 +4,12 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Add command code",
+      "type": "process",
+      "command": "node",
+      "args": ["create-command.js", "${input:commandName}"]
+    },
+    {
       "label": "Debug Build: analyze-code-hotspot",
       "type": "process",
       "command": "npm",
@@ -35,6 +41,13 @@
           "DEBUG": "true"
         }
       }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "commandName",
+      "type": "promptString",
+      "description": "コマンド名"
     }
   ]
 }
