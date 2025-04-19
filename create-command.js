@@ -1,3 +1,4 @@
+const {execSync} = require('node:child_process');
 const {writeFile} = require('node:fs/promises');
 const {join} = require('node:path');
 const {argv} = require('node:process');
@@ -25,9 +26,13 @@ async function main(commandName) {
     {encoding: 'utf-8'},
   );
 
+  // ビルドコマンドの整備
+  execSync(
+    `npm pkg set scripts[build:${commandName}]="npm run build ${commandName}"`,
+  );
+
   // TODO: .vscode/launch.json
   // TODO: .vscode/tasks.json
-  // TODO: pacakage.json
 }
 
 +(async function () {
