@@ -6,11 +6,11 @@ const {major, minor, patch} = require('semver');
 const packageJson = require('./package.json');
 
 /**
- * ビルドの前処理
+ * ビルド前の構築処理
  *
  * @example
  * ``` sh
- * node build.pre.js
+ * node build-configuration.js
  * ```
  */
 async function main() {
