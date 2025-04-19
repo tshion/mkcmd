@@ -1,5 +1,5 @@
 const {execSync} = require('node:child_process');
-const {writeFile} = require('node:fs/promises');
+const {writeFile, readFile} = require('node:fs/promises');
 const {join} = require('node:path');
 const {argv} = require('node:process');
 const {render} = require('nunjucks');
@@ -31,8 +31,37 @@ async function main(commandName) {
     `npm pkg set scripts[build:${commandName}]="npm run build ${commandName}"`,
   );
 
-  // TODO: .vscode/launch.json
-  // TODO: .vscode/tasks.json
+  // 開発環境の整備
+  const pathTasksJson = join('.vscode', 'tasks.json');
+  const dataTasksJson = await readFile(pathTasksJson, {
+    encoding: 'utf-8',
+  }).then(text => JSON.parse(text));
+  dataTasksJson.tasks.push({
+    label: `Debug Build: ${commandName}`,
+    type: 'process',
+    command: 'npm',
+    args: ['run', 'build', commandName],
+    dependsOn: ['Configuration'],
+  });
+  await writeFile(pathTasksJson, JSON.stringify(dataTasksJson, null, 2), {
+    encoding: 'utf-8',
+  });
+
+  const pathLaunchJson = join('.vscode', 'launch.json');
+  const dataLaunchJson = await readFile(pathLaunchJson, {
+    encoding: 'utf-8',
+  }).then(text => JSON.parse(text));
+  dataLaunchJson.configurations.push({
+    name: commandName,
+    type: 'node',
+    request: 'launch',
+    program: `\${workspaceFolder}/src/${commandName}.ts`,
+    preLaunchTask: `Debug Build: ${commandName}`,
+    outFiles: ['${workspaceFolder}/build/**/*.js'],
+  });
+  await writeFile(pathLaunchJson, JSON.stringify(dataLaunchJson, null, 2), {
+    encoding: 'utf-8',
+  });
 }
 
 +(async function () {
