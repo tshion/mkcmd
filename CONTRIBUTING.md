@@ -30,11 +30,10 @@
 `DEBUG` | `true` を指定した場合、デバッグ設定を適用する
 `TEST_MODE` | `true` を指定した場合、開発用の設定を適用する
 
-### コマンドの追加時に変更するファイル
-* `.vscode/launch.json`
-* `.vscode/tasks.json`
-* `src/{コマンド名}.ts`
-* `package.json`
+### コマンドの追加手順
+1. VSCode タスク `Add command code` を実行する
+1. (必要に応じて) 記述位置やコードフォーマットを行う
+1. `README.md` にコマンドの概要を追記する
 
 ### 本番のNode.js バージョン更新時に変更するファイル
 * `.github/dependabot.yml` 内の `@types/node` バージョン
