@@ -61,7 +61,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run prebuild
+      - run: npm run configuration
 
       - name: Check code style
         run: npm run lint
