@@ -1,29 +1,51 @@
 {
-  // See https://go.microsoft.com/fwlink/?LinkId=733558
-  // for the documentation about the tasks.json format
   "version": "2.0.0",
   "tasks": [
+    {
+      "label": "Add command code",
+      "type": "process",
+      "command": "node",
+      "args": ["create-command.js", "${input:commandName}"]
+    },
+    {
+      "label": "Configuration",
+      "type": "process",
+      "command": "npm",
+      "args": ["run", "configuration"],
+      "options": {
+        "env": {
+          "DEBUG": "true",
+          "TEST_MODE": "true"
+        }
+      }
+    },
+    {
+      "label": "Debug Build: analyze-code-hotspot",
+      "type": "process",
+      "command": "npm",
+      "args": ["run", "build", "analyze-code-hotspot"],
+      "dependsOn": ["Configuration"]
+    },
     {
       "label": "Debug Build: show-arguments",
       "type": "process",
       "command": "npm",
       "args": ["run", "build", "show-arguments"],
-      "options": {
-        "env": {
-          "DEBUG": "true"
-        }
-      }
+      "dependsOn": ["Configuration"]
     },
     {
       "label": "Debug Build: update",
       "type": "process",
       "command": "npm",
       "args": ["run", "build", "update"],
-      "options": {
-        "env": {
-          "DEBUG": "true"
-        }
-      }
+      "dependsOn": ["Configuration"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "commandName",
+      "type": "promptString",
+      "description": "コマンド名"
     }
   ]
 }

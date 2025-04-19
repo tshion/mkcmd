@@ -1,9 +1,19 @@
 {
-  // IntelliSense を使用して利用可能な属性を学べます。
-  // 既存の属性の説明をホバーして表示します。
-  // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+    {
+      "name": "analyze-code-hotspot",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/analyze-code-hotspot.ts",
+      "args": [
+        "${input:gitDirPath}",
+        "${input:outputDirPath}",
+        "${input:gitLogStart}"
+      ],
+      "preLaunchTask": "Debug Build: analyze-code-hotspot",
+      "outFiles": ["${workspaceFolder}/build/**/*.js"]
+    },
     {
       "name": "show-arguments",
       "type": "node",
@@ -16,12 +26,26 @@
       "name": "update",
       "type": "node",
       "request": "launch",
-      "env": {
-        "TEST_MODE": "true"
-      },
       "program": "${workspaceFolder}/src/update.ts",
       "preLaunchTask": "Debug Build: update",
       "outFiles": ["${workspaceFolder}/build/**/*.js"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "gitDirPath",
+      "type": "promptString",
+      "description": ".git が配置されているディレクトリーパス"
+    },
+    {
+      "id": "gitLogStart",
+      "type": "promptString",
+      "description": "Git ログの取得開始日 (YYYY-MM-DD 形式)"
+    },
+    {
+      "id": "outputDirPath",
+      "type": "promptString",
+      "description": "出力先のディレクトリーパス"
     }
   ]
 }
