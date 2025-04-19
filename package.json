@@ -10,12 +10,12 @@
     "clean": "gts clean",
     "fix": "gts fix",
     "lint": "gts lint",
-    "prebuild": "node build.pre.js",
+    "configuration": "node build-configuration.js",
     "build": "node build.js",
     "build:analyze-code-hotspot": "npm run build analyze-code-hotspot",
     "build:show-arguments": "npm run build show-arguments",
     "build:update": "npm run build update",
-    "deploy": "npm-run-all build:*",
+    "deploy": "npm run configuration && npm-run-all build:*",
     "test": "node --import tsx --test 'src/**/*.test.ts'"
   },
   "devDependencies": {
