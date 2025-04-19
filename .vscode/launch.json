@@ -26,9 +26,6 @@
       "name": "update",
       "type": "node",
       "request": "launch",
-      "env": {
-        "TEST_MODE": "true"
-      },
       "program": "${workspaceFolder}/src/update.ts",
       "preLaunchTask": "Debug Build: update",
       "outFiles": ["${workspaceFolder}/build/**/*.js"]
