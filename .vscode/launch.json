@@ -11,6 +11,19 @@
       "outFiles": ["${workspaceFolder}/build/**/*.js"]
     },
     {
+      "name": "analyze-code-complexity-trend",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/analyze-code-complexity-trend.ts",
+      "args": [
+        "${input:gitHashStart}",
+        "${input:gitHashEnd}",
+        "${input:filePath}"
+      ],
+      "preLaunchTask": "Debug Build: analyze-code-complexity-trend",
+      "outFiles": ["${workspaceFolder}/build/**/*.js"]
+    },
+    {
       "name": "analyze-code-hotspot",
       "type": "node",
       "request": "launch",
@@ -50,6 +63,16 @@
       "id": "gitDirPath",
       "type": "promptString",
       "description": ".git が配置されているディレクトリーパス"
+    },
+    {
+      "id": "gitHashEnd",
+      "type": "promptString",
+      "description": "Git ログの取得終了ハッシュ"
+    },
+    {
+      "id": "gitHashStart",
+      "type": "promptString",
+      "description": "Git ログの取得開始ハッシュ"
     },
     {
       "id": "gitLogStart",
