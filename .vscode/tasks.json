@@ -20,6 +20,13 @@
       }
     },
     {
+      "label": "Debug Build: analyze-code-complexity",
+      "type": "process",
+      "command": "npm",
+      "args": ["run", "build", "analyze-code-complexity"],
+      "dependsOn": ["Configuration"]
+    },
+    {
       "label": "Debug Build: analyze-code-hotspot",
       "type": "process",
       "command": "npm",

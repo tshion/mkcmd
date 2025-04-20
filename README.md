@@ -3,6 +3,7 @@
 
 コマンド | 用途
 --- | ---
+[`node analyze-code-complexity.js {filePath}`](./src/analyze-code-complexity.ts) | ソースコード中に含まれるインデント数の分析
 [`node analyze-code-hotspot.js {gitDirPath} {outputDirPath} {after}`](./src/analyze-code-hotspot.ts)<br />(※`git`, `java`, `perl` 環境が必要) | Git の履歴からファイル毎の変更頻度とコード規模をCSV 出力する
 [`node show-argument.js`](./src/show-arguments.ts) | コマンドライン引数を表示する
 [`node update.js`](./src/update.ts) | 最新のコマンドに更新する

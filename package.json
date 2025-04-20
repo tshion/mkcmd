@@ -12,6 +12,7 @@
     "lint": "gts lint",
     "configuration": "node build-configuration.js",
     "build": "node build.js",
+    "build:analyze-code-complexity": "npm run build analyze-code-complexity",
     "build:analyze-code-hotspot": "npm run build analyze-code-hotspot",
     "build:show-arguments": "npm run build show-arguments",
     "build:update": "npm run build update",
