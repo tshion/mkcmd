@@ -3,9 +3,9 @@
 // ######################################################################
 
 import {readFile} from 'node:fs/promises';
+import {calculate_complexity_in} from './complexity_calculations';
 import {DescriptiveStats} from './desc_stats';
 import {create_for} from './language_preprocessors';
-import {calculate_complexity_in} from './complexity_calculations';
 
 // ######################################################################
 // # Statistics from complexity
@@ -56,12 +56,12 @@ export async function run(args: {file: string}) {
   as_csv(stats);
 }
 
-// if (require.main === module) {
-//   const args = process.argv.slice(2);
-//   const fileArg = args[0];
-//   if (!fileArg) {
-//     console.error('The file to calculate complexity on is required.');
-//     process.exit(1);
-//   }
-//   run({file: fileArg});
-// }
+// if __name__ == "__main__":
+//     parser = argparse.ArgumentParser(
+//         description='Calculates whitespace complexity of the given file.')
+//     parser.add_argument(
+//         'file',
+//         type=str,
+//         help='The file to calculate complexity on')
+//     args = parser.parse_args()
+//     run(args)

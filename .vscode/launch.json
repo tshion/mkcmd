@@ -6,6 +6,7 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/src/analyze-code-complexity.ts",
+      "args": ["${input:filePath}"],
       "preLaunchTask": "Debug Build: analyze-code-complexity",
       "outFiles": ["${workspaceFolder}/build/**/*.js"]
     },
@@ -40,6 +41,11 @@
     }
   ],
   "inputs": [
+    {
+      "id": "filePath",
+      "type": "promptString",
+      "description": "ファイルパス"
+    },
     {
       "id": "gitDirPath",
       "type": "promptString",
