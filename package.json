@@ -19,7 +19,7 @@
     "test": "node --import tsx --test 'src/**/*.test.ts'"
   },
   "devDependencies": {
-    "@octokit/core": "^6.1.5",
+    "@octokit/core": "^7.0.2",
     "@types/node": "^20.17.50",
     "@types/nunjucks": "^3.2.6",
     "@types/unzipper": "^0.10.11",
