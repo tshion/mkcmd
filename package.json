@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@octokit/core": "^7.0.2",
-    "@types/node": "^20.19.4",
+    "@types/node": "^20.19.9",
     "@types/nunjucks": "^3.2.6",
     "@types/unzipper": "^0.10.11",
     "@vercel/ncc": "^0.38.3",
