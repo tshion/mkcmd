@@ -35,7 +35,7 @@ jobs:
           echo "version=${version}" >> "$GITHUB_OUTPUT"
 
       # https://github.com/tshion/can-create-release
-      - uses: tshion/can-create-release@0.1.1
+      - uses: tshion/can-create-release@0.1.2
         with:
           tag: ${{ steps.meta.outputs.version }}
 
