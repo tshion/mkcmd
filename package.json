@@ -26,7 +26,7 @@
     "@types/nunjucks": "^3.2.6",
     "@types/unzipper": "^0.10.11",
     "@vercel/ncc": "^0.38.4",
-    "gts": "^6.0.2",
+    "gts": "^7.0.0",
     "node-fetch": "^2.7.0",
     "npm-run-all2": "^8.0.4",
     "nunjucks": "^3.2.4",
